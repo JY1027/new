@@ -1,0 +1,73 @@
+/* =========================================================
+   可愛滑鼠 + 點擊特效（搭配 cursor.js）
+   ========================================================= */
+html.pm-cursor, html.pm-cursor * { cursor: none !important; }
+html.pm-cursor input, html.pm-cursor textarea, html.pm-cursor [contenteditable="true"] { cursor: text !important; }
+
+.pm-fx { position: fixed; inset: 0; z-index: 9998; pointer-events: none; overflow: hidden; }
+.pm-p { position: absolute; pointer-events: none; will-change: transform, opacity; }
+.pm-p svg, .pm-p img { display: block; width: 100%; height: 100%; }
+.pm-p img { height: auto; filter: drop-shadow(0 2px 0 rgba(43, 43, 43, .25)); }
+
+.pm-ring {
+  position: absolute; width: 74px; height: 74px; border-radius: 50%; pointer-events: none;
+  border: 3px dashed #2b2b2b; background: radial-gradient(circle, rgba(253, 208, 112, .55), rgba(253, 208, 112, 0) 70%);
+}
+.pm-ring.thin { width: 96px; height: 96px; border: 2px solid rgba(255, 143, 163, .85); background: none; }
+
+.pm-word {
+  position: absolute; pointer-events: none; white-space: nowrap;
+  font-family: var(--font-logo, 'Caveat', cursive); font-weight: 700; font-size: 30px; line-height: 1;
+  color: #6b3a2e; -webkit-text-stroke: 6px #fffdf6; paint-order: stroke fill;
+  text-shadow: 0 3px 0 rgba(107, 58, 46, .18);
+}
+.pm-word:lang(zh), .pm-word { font-family: var(--font-logo, 'Caveat', cursive), var(--font-hand, sans-serif); }
+
+/* ---------- 游標本體 ---------- */
+.pm-cur { position: fixed; left: 0; top: 0; z-index: 2147483647; pointer-events: none; opacity: 0; transition: opacity .2s; }
+.pm-cur.on { opacity: 1; }
+.pm-cur.is-text { opacity: 0; }
+
+.pm-cur-ringpos { position: absolute; left: 0; top: 0; will-change: transform; }
+.pm-cur-ring {
+  position: absolute; left: 0; top: 0; width: 50px; height: 50px; margin: -25px 0 0 -25px; border-radius: 50%;
+  border: 2.5px dashed rgba(107, 58, 46, .5);
+  transition: width .35s var(--pop, ease), height .35s var(--pop, ease), margin .35s var(--pop, ease), background .25s, border-color .25s;
+  animation: cur-spin 9s linear infinite;
+}
+.pm-cur.is-hover .pm-cur-ring, .pm-cur.is-ghost .pm-cur-ring {
+  width: 70px; height: 70px; margin: -35px 0 0 -35px;
+  background: rgba(253, 208, 112, .28); border-color: rgba(43, 43, 43, .75);
+}
+.pm-cur.is-ghost .pm-cur-ring { background: none; border-color: rgba(255, 107, 129, .8); }
+.pm-cur.is-down .pm-cur-ring { width: 36px; height: 36px; margin: -18px 0 0 -18px; }
+
+.pm-cur-star { position: absolute; left: 0; top: 0; width: 40px; height: 40px; margin: -20px 0 0 -20px; will-change: transform; }
+.pm-cur-state {
+  width: 100%; height: 100%; rotate: -6deg;
+  filter: drop-shadow(0 3px 0 rgba(60, 40, 10, .22));
+  transition: transform .3s var(--pop, ease);
+  animation: cur-bob 2.4s ease-in-out infinite alternate;
+}
+.pm-cur.is-hover .pm-cur-state { transform: scale(1.3); }
+.pm-cur.is-ghost .pm-cur-state { transform: scale(1.22); }
+.pm-cur.is-down .pm-cur-state { transform: scale(.78); }
+
+/* 表情：預設 → 開心 → 驚訝（碰到小精靈）→ 瞇眼（按下） */
+.pm-cur .f { display: none; }
+.pm-cur .f-idle { display: inline; }
+.pm-cur.is-hover .f-idle { display: none; }
+.pm-cur.is-hover .f-happy { display: inline; }
+.pm-cur.is-ghost .f-idle, .pm-cur.is-ghost .f-happy { display: none; }
+.pm-cur.is-ghost .f-wow { display: inline; }
+.pm-cur.is-down .f-idle, .pm-cur.is-down .f-happy, .pm-cur.is-down .f-wow { display: none; }
+.pm-cur.is-down .f-press { display: inline; }
+.pm-cur .f-idle .eye { transform-box: fill-box; transform-origin: center; animation: cur-blink 4.6s infinite; }
+
+@keyframes cur-spin { to { rotate: 360deg; } }
+@keyframes cur-bob { to { rotate: 7deg; } }
+@keyframes cur-blink { 0%, 93%, 100% { transform: scaleY(1); } 96% { transform: scaleY(.1); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .pm-cur-ring, .pm-cur-state, .pm-cur .f-idle .eye { animation: none !important; }
+}

@@ -1,0 +1,80 @@
+/* =========================================================
+   背景小精靈（布丁＆藍莓）— 搭配 ghosts.js
+   結構：.ghost（JS 負責位置）
+          ├ .g-shadow            飄浮陰影
+          ├ .g-pop > .g-tilt > .g-fx   進場 / 傾斜 / 跳躍轉圈（各管各的）
+          │     └ 身體圖 + 兩顆眼睛（瞳孔、上眼皮、下眼皮）+ 腮紅 + 嘴巴
+          └ .g-say               對話泡泡（不跟著身體歪）
+   層級：在背景(.bg)之上、場景(.scene)之下 → 真的是「背景」裡的小夥伴
+   ========================================================= */
+.ghost-layer { position: absolute; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
+
+.ghost {
+  --gw: clamp(38px, 4.4vw, 68px);
+  position: absolute; left: 0; top: 0; width: var(--gw); aspect-ratio: 190 / 206;
+  will-change: transform; user-select: none;
+}
+.g-shadow {
+  position: absolute; left: 16%; right: 16%; bottom: -16%; height: calc(var(--gw) * .1);
+  border-radius: 50%; background: rgba(107, 58, 46, .17); filter: blur(3px);
+  transform: scale(var(--sh, 1)); transition: opacity .3s;
+}
+.g-pop { position: absolute; inset: 0; animation: g-in .9s var(--pop) .6s backwards; }
+.g-tilt { position: absolute; inset: 0; transform-origin: 50% 90%; }
+.g-fx { position: absolute; inset: 0; transform-origin: 50% 100%; filter: drop-shadow(0 calc(var(--gw) * .04) 0 rgba(60, 40, 10, .14)); }
+.g-img { position: absolute; inset: 0; width: 100%; height: 100%; display: block; -webkit-user-drag: none; }
+@keyframes g-in { from { scale: 0; rotate: -25deg; opacity: 0; } }
+
+/* ----- 眼睛：白底(圖上就有) + 瞳孔(JS 移動) + 眼皮(眨眼/表情) ----- */
+.g-eye { position: absolute; overflow: hidden; }
+.g-pupil { position: absolute; background: #2b2b2b; transition: scale .2s var(--pop); }
+.g-lid {
+  position: absolute; left: -1px; right: -1px; background: var(--fill);
+  transition: height .08s linear, border-width .08s linear;
+}
+.g-lid.t { top: -1px; height: calc(var(--lt, 0) * 100%); border-bottom: 0 solid #2b2b2b; border-bottom-width: calc(var(--lt, 0) * var(--gw) * .034); }
+.g-lid.b { bottom: -1px; height: calc(var(--lb, 0) * 100%); border-top: 0 solid #2b2b2b; border-top-width: calc(var(--lb, 0) * var(--gw) * .034); border-radius: 50% 50% 0 0 / 100% 100% 0 0; }
+.ghost[data-expr="happy"]   { --lb: .46; }
+.ghost[data-expr="sleepy"]  { --lt: .56; }
+.ghost[data-expr="shy"]     { --lt: .14; --lb: .1; }
+.ghost[data-expr="wow"] .g-pupil { scale: .68; }
+.ghost.is-blink { --lt: 1 !important; --lb: 0 !important; }
+
+/* ----- 腮紅 / 嘴巴：依表情顯示 ----- */
+.g-blush {
+  position: absolute; top: 66.5%; width: 14.5%; height: 6.5%; border-radius: 50%;
+  background: #ff8fa3; opacity: 0; transition: opacity .25s;
+}
+.g-blush.l { left: 11.5%; }
+.g-blush.r { left: 74%; }
+.ghost[data-expr="happy"] .g-blush, .ghost[data-expr="shy"] .g-blush { opacity: .85; }
+
+.g-mouth { position: absolute; left: 45.5%; top: 71.5%; width: 9%; height: 5%; opacity: 0; transition: opacity .2s; box-sizing: border-box; }
+.ghost[data-expr="happy"] .g-mouth { opacity: 1; width: 10%; height: 4.6%; border-bottom: calc(var(--gw) * .03) solid #2b2b2b; border-radius: 0 0 99px 99px; }
+.ghost[data-expr="shy"] .g-mouth { opacity: 1; width: 6%; left: 47%; height: 0; border-bottom: calc(var(--gw) * .028) solid #2b2b2b; border-radius: 99px; }
+.ghost[data-expr="wow"] .g-mouth { opacity: 1; width: 5.5%; height: 6.2%; left: 47.2%; top: 71%; background: #2b2b2b; border-radius: 50%; }
+.ghost[data-expr="dizzy"] .g-mouth { opacity: 1; width: 10%; height: 0; border-bottom: calc(var(--gw) * .03) dotted #2b2b2b; }
+.ghost[data-expr="sleepy"] .g-mouth { opacity: 1; width: 4.5%; left: 47.7%; height: 4.5%; border: calc(var(--gw) * .026) solid #2b2b2b; border-radius: 50%; }
+
+/* ----- 對話泡泡 ----- */
+.g-say {
+  position: absolute; left: 50%; bottom: calc(100% + 6px); z-index: 2; pointer-events: none; white-space: nowrap;
+  padding: 3px 14px 6px; font-family: var(--font-hand); font-size: 12px; letter-spacing: .06em; line-height: 1.45; color: #2b2b2b;
+  background: var(--bg-say, #fff0b8); border: 3px solid #2b2b2b; border-radius: 18px; box-shadow: 0 4px 0 rgba(60, 40, 10, .16);
+  opacity: 0; transform: translate(calc(-50% + var(--bx, 0px)), 10px) scale(.55); transform-origin: calc(50% - var(--bx, 0px)) 100%;
+  transition: transform .35s var(--pop), opacity .18s;
+}
+.g-say.on { opacity: 1; transform: translate(calc(-50% + var(--bx, 0px)), 0) scale(1); }
+.g-say::after {
+  content: ''; position: absolute; left: calc(50% - var(--bx, 0px)); bottom: -9px; width: 12px; height: 12px;
+  background: var(--bg-say, #fff0b8); border: solid #2b2b2b; border-width: 0 3px 3px 0; border-radius: 0 0 5px 0;
+  transform: rotate(45deg); box-shadow: 0 4px 0 rgba(60, 40, 10, .16);
+}
+.ghost[data-ghost="b"] { --bg-say: #e2f0ff; }
+
+@media (max-width: 640px) {
+  .g-say { font-size: 14px; padding: 2px 10px 5px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .g-pop { animation: none; }
+}

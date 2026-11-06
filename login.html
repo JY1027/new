@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>登入｜PickMe</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Huninn&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style2.css?v=login-icon">
+  <link rel="stylesheet" href="cursor.css">
+</head>
+<body class="auth-page">
+  <div class="bg" aria-hidden="true">
+    <i class="bg-blob b1"></i><i class="bg-blob b2"></i><i class="bg-blob b3"></i>
+    <i class="bg-star s1"></i><i class="bg-star s2"></i><i class="bg-star s3"></i>
+    <svg class="bg-wave w1" viewBox="0 0 1440 220" preserveAspectRatio="none"><path d="M0 90C180 30 330 30 520 80S900 150 1100 90 1360 30 1440 60V220H0Z"/></svg>
+    <svg class="bg-wave w2" viewBox="0 0 1440 220" preserveAspectRatio="none"><path d="M0 120C200 70 380 60 560 110S940 170 1140 120 1380 80 1440 100V220H0Z"/></svg>
+  </div>
+
+  <div class="auth-top">
+    <a class="logo" href="./index.html" aria-label="PickMe 首頁"><img src="images/pickme-logo.png" alt="PickMe!" draggable="false"></a>
+    <a class="home-icon-button" href="./index.html" aria-label="回首頁" title="回首頁">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>
+      </svg>
+    </a>
+  </div>
+
+  <main class="auth-card">
+    <img class="auth-girl" src="images/girl.png" alt="" draggable="false">
+    <img class="auth-q" src="images/question.png" alt="" draggable="false">
+    <img class="auth-logo" src="images/pickme-logo.png" alt="PickMe!" draggable="false">
+
+    <div class="tabs" id="tabs" data-m="login" role="tablist">
+      <i class="tab-ind"></i>
+      <button type="button" role="tab" id="t-login" data-m="login" aria-selected="true">登入</button>
+      <button type="button" role="tab" id="t-register" data-m="register" aria-selected="false">註冊</button>
+    </div>
+
+    <form id="form" novalidate>
+      <label class="field" id="nameField" hidden><span>暱稱</span><input id="name" type="text" autocomplete="nickname" maxlength="20" placeholder="大家怎麼叫你？"></label>
+      <label class="field"><span>Email</span><input id="email" type="email" autocomplete="email" placeholder="you@example.com"></label>
+      <label class="field"><span>密碼</span><input id="pw" type="password" autocomplete="current-password" placeholder="至少 6 個字元"></label>
+      <p class="err" id="err" role="alert"></p>
+      <button class="btn-kick" id="submit" type="submit">登入</button>
+    </form>
+    <p class="hint">登入後，就能把喜歡的工具收藏起來。</p>
+  </main>
+
+  <script src="auth.js"></script>
+  <script src="cursor.js"></script>
+  <script>
+    (() => {
+      const $ = (s) => document.querySelector(s);
+      let next = new URLSearchParams(location.search).get('next') || 'index.html';
+      const isToolFavorite = /^tool\/(?:gacha|slot|claw|wheel|card)\.html\?favorite=[\w-]+&curtain=open$/.test(next);
+      const isToolDraft = /^tool\/(?:gacha|slot|claw|wheel|card)\.html\?draft=[\w%._~!*'()-]+$/.test(next);
+      if (!/^[\w\-./]+\.html$/.test(next) && !/^tool\.html\?tool=[\w-]+$/.test(next) && !isToolFavorite && !isToolDraft) next = 'index.html';
+      if (Auth.user()) { location.replace(next); return; }
+
+      let mode = 'login';
+      const tabs = $('#tabs'), err = $('#err');
+      function setMode(m) {
+        mode = m; tabs.dataset.m = m;
+        tabs.querySelectorAll('button').forEach((b) => b.setAttribute('aria-selected', b.dataset.m === m));
+        $('#nameField').hidden = m === 'login';
+        $('#submit').textContent = m === 'login' ? '登入' : '建立帳號';
+        $('#pw').autocomplete = m === 'login' ? 'current-password' : 'new-password';
+        err.textContent = '';
+      }
+      tabs.addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) setMode(b.dataset.m); });
+
+      function fail(msg, input) {
+        err.textContent = msg;
+        err.classList.remove('shake'); void err.offsetWidth; err.classList.add('shake');
+        input && input.focus();
+      }
+      $('#form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const name = $('#name').value, email = $('#email').value, pw = $('#pw').value;
+        if (mode === 'register' && !name.trim()) return fail('請輸入暱稱。', $('#name'));
+        if (!/^\S+@\S+\.\S+$/.test(email.trim())) return fail('請輸入正確的 Email，例如 you@example.com。', $('#email'));
+        if (pw.length < 6) return fail('密碼至少要 6 個字元。', $('#pw'));
+        try {
+          await (mode === 'login' ? Auth.login(email, pw) : Auth.register(name, email, pw));
+          location.href = next;
+        } catch (ex) { fail(ex.message); }
+      });
+    })();
+  </script>
+</body>
+</html>

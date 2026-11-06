@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PickMe｜美食與景點推薦</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Huninn&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style2.css?v=login-icon">
+  <link rel="stylesheet" href="topics.css">
+  <link rel="stylesheet" href="tool-transition.css">
+  <link rel="stylesheet" href="cursor.css">
+  <script src="tool-transition.js"></script>
+</head>
+<body class="topics-page">
+  <header class="auth-top">
+    <a class="logo" href="./index.html" aria-label="PickMe 首頁">
+      <img src="images/pickme-logo.png" alt="PickMe!" draggable="false">
+    </a>
+    <div class="tool-top-actions">
+      <a class="back" href="./index.html">回首頁</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="topics-hero">
+      <p class="s-tag">PICK YOUR THEME</p>
+      <h1>今天想去哪裡、吃什麼？</h1>
+      <p>從臺北街角到巷弄美味，挑一張卡片開始探索。</p>
+      <nav class="topics-jump" aria-label="主題導覽">
+        <a href="#food-guide">大臺北食物</a>
+        <a href="#attraction-guide">大臺北景點</a>
+      </nav>
+    </section>
+
+    <section class="guide-section food-section" id="food-guide" aria-labelledby="foodTitle">
+      <div class="guide-heading">
+        <p class="guide-eyebrow">01 / TAIPEI FLAVORS</p>
+        <h2 id="foodTitle">大臺北食物</h2>
+        <p>點擊卡片翻面，看看有哪些在地好店推薦。</p>
+      </div>
+      <div class="food-grid" id="foodGrid"></div>
+    </section>
+
+    <section class="guide-section attraction-section" id="attraction-guide" aria-labelledby="attractionTitle">
+      <div class="guide-heading">
+        <p class="guide-eyebrow">02 / PLACES TO GO</p>
+        <h2 id="attractionTitle">大臺北景點</h2>
+        <p>從城市地標、老街巷弄到山海綠地，收藏下一段散步路線。</p>
+      </div>
+      <div class="attraction-grid" id="attractionGrid"></div>
+    </section>
+  </main>
+
+  <footer class="topics-footer">
+    <a class="back" href="./index.html">回到首頁</a>
+  </footer>
+  <button class="top-ghost" id="topicsTop" type="button" aria-label="回到頁首" title="回到頁首" aria-hidden="true" tabindex="-1">
+    <span class="top-ghost-sprite" aria-hidden="true">
+      <img src="images/ghost-y.png" alt="" draggable="false">
+      <span class="top-ghost-eye eye-left"><i class="top-ghost-pupil"></i><i class="top-ghost-lid"></i></span>
+      <span class="top-ghost-eye eye-right"><i class="top-ghost-pupil"></i><i class="top-ghost-lid"></i></span>
+    </span>
+    <span>TOP</span>
+  </button>
+  <script src="cursor.js"></script>
+  <script src="images/topic-image-credits.js"></script>
+  <script src="topics.js"></script>
+</body>
+</html>

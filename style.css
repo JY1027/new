@@ -1,0 +1,329 @@
+/* =========================================================
+   choice header
+   重點技巧：
+   1. 場景用「設計座標 880×800」排版，JS 再整體 scale，位置永遠像草稿
+   2. 用獨立的 translate / rotate / scale 屬性，讓「視差、漂浮、hover、進場」
+      四種動畫各管各的，不會互相覆蓋 transform
+   3. SVG feTurbulence + feDisplacementMap 做手繪線條抖動
+   ========================================================= */
+
+:root {
+  --ink: #2b2b2b;
+  --paper: #fffdf6;
+  --font-hand: 'Huninn', 'Chiron GoRound TC', 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+  --font-logo: 'Caveat', 'Segoe Script', 'Bradley Hand', cursive;
+  --pop: cubic-bezier(.34, 1.56, .64, 1);   /* 有彈性的回彈曲線 */
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  font-family: var(--font-hand);
+  color: var(--ink);
+  background: #f1dcb2;
+  overflow-x: hidden;
+}
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap;
+}
+
+/* ---------- Hero 背景：暖米色 + 紙張點點 ---------- */
+.hero {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 640px;
+  overflow: hidden;
+  isolation: isolate;
+  background:
+    radial-gradient(circle at 30% 75%, #fff4d9 0, rgba(255, 244, 217, 0) 55%),
+    radial-gradient(rgba(107, 58, 46, .07) 1.4px, transparent 1.7px) 0 0 / 22px 22px,
+    linear-gradient(160deg, #f8e9c6, #efd8a9);
+}
+
+/* ---------- 導覽列 ---------- */
+.nav {
+  position: absolute; top: 0; left: 0; right: 0; z-index: 30;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 22px clamp(20px, 4vw, 56px);
+  animation: nav-in .8s var(--pop) .1s backwards;
+}
+.logo {
+  display: inline-block; line-height: 0;
+  text-decoration: none;
+  transition: transform .35s var(--pop);
+}
+.logo:hover { transform: rotate(-4deg) scale(1.08); }
+
+.nav-right { display: flex; align-items: center; gap: 22px; }
+.fav {
+  all: unset; box-sizing: border-box;
+  width: 52px; height: 52px; display: grid; place-items: center;
+  color: var(--ink); cursor: pointer;
+  transition: transform .35s var(--pop);
+}
+.fav svg { width: 100%; height: 100%; }
+.fav:hover { transform: translateY(-4px) rotate(-8deg) scale(1.12); }
+.fav:hover path:last-child { animation: heartbeat .7s ease-in-out infinite; transform-origin: 24px 28px; }
+.login {
+  font-family: var(--font-logo); font-size: 32px; line-height: 1;
+  padding: 4px 32px 8px; color: var(--ink); text-decoration: none;
+  border: 4px solid var(--ink); border-radius: 999px;
+  transition: background .25s, color .25s, transform .35s var(--pop);
+}
+.login:hover { background: var(--ink); color: var(--paper); transform: rotate(-3deg) scale(1.08); }
+.fav:focus-visible, .login:focus-visible, .logo:focus-visible { outline: 3px dashed var(--ink); outline-offset: 4px; }
+
+/* ---------- 場景（JS 會設定 transform: translate + scale） ---------- */
+.scene {
+  position: absolute; left: 0; top: 0;
+  width: 880px; height: 800px;
+  transform-origin: 0 0;
+  z-index: 2;
+}
+
+/* 閃亮小星星 */
+.spark {
+  position: absolute; width: var(--s); height: var(--s);
+  background: #ffc93c;
+  clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
+  animation: twinkle 2.6s ease-in-out var(--d) infinite;
+}
+
+/* 女孩：進場 → 呼吸 */
+.girl {
+  position: absolute; left: 245px; top: 419px; width: 310px; height: auto;
+  transform-origin: 50% 100%;
+  user-select: none; -webkit-user-drag: none;
+  translate: calc(var(--mx, 0) * -7px) calc(var(--my, 0) * -4px);   /* 視差：跟滑鼠反向移動一點點 */
+  animation: girl-in 1s cubic-bezier(.2, .9, .3, 1) .1s backwards,
+             breathe 4.6s ease-in-out 1.1s infinite;
+}
+
+/* ---------- 雲朵對話框 ---------- */
+.cloud {
+  position: absolute; left: var(--x); top: var(--y); width: var(--w); height: var(--h);
+  display: grid; place-items: center;
+  isolation: isolate; cursor: pointer; outline: none;
+  filter: drop-shadow(0 8px 0 rgba(120, 80, 20, .14));
+  /* 視差（translate）、進場（scale/rotate 的 keyframes）、漂浮（transform keyframes）、hover（scale/rotate transition）互不衝突 */
+  translate: calc(var(--mx, 0) * var(--depth, 1) * 14px) calc(var(--my, 0) * var(--depth, 1) * 9px);
+  transition: scale .4s var(--pop), rotate .4s var(--pop);
+  animation: pop .8s var(--pop) calc(.45s + var(--i) * .13s) backwards,
+             float var(--fd, 5s) ease-in-out calc(1.4s + var(--i) * .13s) infinite alternate;
+}
+.cloud:is(:hover, :focus-visible, .is-hover) { scale: 1.07; rotate: -1.5deg; }
+
+.cloud-shape {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  z-index: 1; overflow: visible;
+  filter: url(#rough1);
+}
+/* non-scaling-stroke：不管雲朵被拉多寬，線條粗細都固定 */
+#cloud-path .cloud-outline * { fill: var(--paper); stroke: var(--ink); stroke-width: 9; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+#cloud-path .cloud-fill * { fill: var(--paper); stroke: none; }
+
+.cloud-text {
+  position: relative; z-index: 2;
+  font-size: 27px; line-height: 1.5; letter-spacing: .08em; text-align: center;
+  padding: 0 18px; pointer-events: none;
+}
+
+/* ---------- 雲朵上的小圖示：平常輕輕浮動，hover 才大幅晃動 ---------- */
+.ico {
+  position: absolute; z-index: 0;                 /* 在雲朵(z-index:1)後面 → 看起來「站」在雲上 */
+  left: var(--l); top: var(--t); width: var(--s); height: auto;
+  transform-origin: 50% 100%;
+  user-select: none; -webkit-user-drag: none;
+  animation: bob 3.4s ease-in-out var(--d, 0s) infinite;
+}
+.ico-brush { rotate: 22deg; }
+
+.cloud:is(:hover, :focus-visible, .is-hover) .ico        { animation: wiggle .6s ease-in-out infinite; }
+.cloud:is(:hover, :focus-visible, .is-hover) .ico-shake  { animation: shake .45s ease-in-out infinite; }
+.cloud:is(:hover, :focus-visible, .is-hover) .ico-hop    { animation: hop .72s ease-in-out infinite; }
+.cloud:is(:hover, :focus-visible, .is-hover) .ico-bounce { animation: bounce .55s ease-in-out infinite; }
+.cloud:is(:hover, :focus-visible, .is-hover) .ico-swing  { animation: swing .8s ease-in-out infinite; }
+.cloud:is(:hover, :focus-visible, .is-hover) .ico-dance  { animation: dance .6s ease-in-out infinite; }
+.cloud:is(:hover, :focus-visible, .is-hover) .ico-note   { animation: note 1.1s ease-out infinite; }
+.cloud:is(:hover, :focus-visible, .is-hover) .ico        { animation-delay: var(--d, 0s); }
+
+/* ---------- 思考泡泡 ---------- */
+.dots { position: absolute; inset: 0; pointer-events: none; z-index: 3; }
+.dot {
+  position: absolute; border-radius: 50%;
+  background: var(--paper); border: 3.5px solid var(--ink);
+  box-shadow: 0 3px 0 rgba(120, 80, 20, .14);
+  transition: background .25s;
+  animation: dot-float 3.2s ease-in-out calc(var(--n) * .25s) infinite;
+}
+.dot.on { background: #ffe27a; animation: dot-pulse .8s ease-in-out calc(var(--n) * .12s) infinite; }
+
+/* ---------- 問號（位置由 JS 每幀計算） ---------- */
+.qmark {
+  position: absolute; left: 0; top: 0; z-index: 20;
+  width: 86px; height: auto; margin: -48px 0 0 -43px;
+  pointer-events: none; user-select: none;
+  filter: drop-shadow(0 4px 0 rgba(0, 0, 0, .08));
+  animation: q-in .7s var(--pop) 1.5s backwards;
+}
+
+/* ---------- 工具輪盤 ---------- */
+.wheel {
+  position: absolute; inset: 0; z-index: 5; pointer-events: none;
+  animation: wheel-in .9s ease .3s backwards;
+}
+.ring { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.wheel-hit {
+  position: absolute; top: 0; bottom: 0; right: 0; width: var(--zone, 300px);
+  pointer-events: auto; touch-action: none; cursor: grab;
+}
+.wheel.dragging .wheel-hit, .wheel.dragging .node-btn { cursor: grabbing; }
+.nodes { position: absolute; inset: 0; pointer-events: none; }
+
+.node {
+  position: absolute; left: 0; top: 0; width: 150px; height: 150px; margin: -75px 0 0 -75px;
+  pointer-events: auto; touch-action: none; will-change: transform;
+}
+.node-btn {
+  all: unset; box-sizing: border-box;
+  width: 100%; height: 100%; border-radius: 50%;
+  display: grid; place-items: center; cursor: pointer;
+  background: var(--nbg, var(--paper));
+  border: 6px solid var(--ink);
+  box-shadow: 0 8px 0 rgba(60, 40, 10, .16);
+  transition: transform .35s var(--pop), box-shadow .3s, filter .3s;
+}
+.node-btn img {
+  width: 62%; height: 62%; object-fit: contain;
+  pointer-events: none; user-select: none; -webkit-user-drag: none;
+}
+/* hover：放大 + 微轉 + 圖示扭動 */
+.node-btn:hover { transform: scale(1.17) rotate(-5deg); box-shadow: 0 14px 0 rgba(60, 40, 10, .2); filter: saturate(1.15); }
+.node-btn:hover img { animation: tool-wiggle .6s ease-in-out infinite; }
+.node-btn:focus-visible { outline: 4px dashed var(--ink); outline-offset: 6px; }
+
+.node.is-active .node-btn { box-shadow: 0 0 0 9px rgba(255, 255, 255, .6), 0 12px 0 rgba(60, 40, 10, .18); }
+.node.is-active::after {
+  content: ''; position: absolute; inset: -6px; border-radius: 50%;
+  border: 3px solid var(--ink); opacity: 0; pointer-events: none;
+  animation: ping 2s ease-out infinite;
+}
+.node-label {
+  position: absolute; left: calc(100% + 14px); top: 50%; translate: 0 -50%;
+  writing-mode: vertical-rl; letter-spacing: .38em;
+  font-size: 26px; white-space: nowrap; pointer-events: none;
+}
+
+/* =========================================================
+   Keyframes
+   ========================================================= */
+@keyframes nav-in   { from { opacity: 0; transform: translateY(-24px); } }
+@keyframes girl-in  { from { opacity: 0; transform: translateY(90px) scale(.96); } }
+@keyframes breathe  { 0%, 100% { transform: scale(1, 1) rotate(0); } 50% { transform: scale(1.012, 1.02) rotate(-.7deg); } }
+@keyframes pop      { from { scale: .2; rotate: -10deg; opacity: 0; } to { scale: 1; rotate: 0deg; opacity: 1; } }
+@keyframes float    { from { transform: translateY(-6px); } to { transform: translateY(7px); } }
+@keyframes q-in     { from { opacity: 0; scale: .2; } }
+@keyframes wheel-in { from { opacity: 0; } }
+@keyframes twinkle  { 0%, 100% { scale: .4; opacity: .35; rotate: 0deg; } 50% { scale: 1; opacity: 1; rotate: 35deg; } }
+@keyframes heartbeat{ 0%, 100% { scale: 1; } 40% { scale: 1.25; } }
+@keyframes ping     { 0% { opacity: .5; scale: 1; } 100% { opacity: 0; scale: 1.28; } }
+
+/* 小圖示：待機 / hover */
+@keyframes bob    { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-4px) rotate(1.5deg); } }
+@keyframes wiggle { 0%, 100% { transform: rotate(-8deg); } 50% { transform: rotate(8deg); } }
+@keyframes shake  { 0%, 100% { transform: translateX(0) rotate(0); } 20% { transform: translateX(-6px) rotate(-5deg); } 40% { transform: translateX(6px) rotate(5deg); } 60% { transform: translateX(-4px) rotate(-3deg); } 80% { transform: translateX(4px) rotate(3deg); } }
+@keyframes hop    { 0%, 100% { transform: translateY(0) scaleY(1); } 35% { transform: translateY(-16px) rotate(-5deg) scaleY(1.05); } 60% { transform: translateY(-16px) rotate(5deg); } 85% { transform: translateY(0) scaleY(.93); } }
+@keyframes bounce { 0%, 100% { transform: translateY(0) scale(1, 1); } 45% { transform: translateY(-14px) scale(.96, 1.06); } 80% { transform: translateY(0) scale(1.06, .94); } }
+@keyframes swing  { 0%, 100% { transform: rotate(-16deg); } 50% { transform: rotate(18deg); } }
+@keyframes dance  { 0%, 100% { transform: translateY(0) rotate(-6deg); } 25% { transform: translateY(-14px) rotate(7deg); } 50% { transform: translateY(0) rotate(-6deg); } 75% { transform: translateY(-9px) rotate(8deg); } }
+@keyframes note   { 0% { transform: translate(0, 6px) scale(.8); opacity: .3; } 40% { opacity: 1; } 100% { transform: translate(8px, -28px) rotate(14deg) scale(1.12); opacity: 0; } }
+
+/* 思考泡泡 */
+@keyframes dot-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+@keyframes dot-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.4); } }
+
+/* 工具圖示 hover */
+@keyframes tool-wiggle { 0%, 100% { transform: rotate(-8deg) scale(1.06); } 50% { transform: rotate(8deg) scale(1.06); } }
+
+/* 使用者在系統設定開啟「減少動態效果」時，關掉持續性動畫 */
+@media (prefers-reduced-motion: reduce) {
+  .cloud, .ico, .girl, .spark, .dot, .node.is-active::after { animation: none !important; }
+  .wheel, .nav, .qmark { animation: none !important; }
+}
+
+/* 窄螢幕：縮小導覽列（舞台與輪盤由 JS 依視窗自動縮放） */
+@media (max-width: 720px) {
+  .login { font-size: 24px; padding: 2px 20px 6px; border-width: 3px; }
+  .fav { width: 42px; height: 42px; }
+  .nav-right { gap: 12px; }
+}
+
+
+/* =========================================================
+   PickMe logo（圖片）
+   ========================================================= */
+.logo img { height: clamp(46px, 4.6vw, 70px); width: auto; display: block; user-select: none; -webkit-user-drag: none; filter: drop-shadow(0 4px 0 rgba(107, 58, 46, .12)); }
+
+/* =========================================================
+   背景分層（z-index:0，全部在場景與輪盤後面）
+   遠：模糊色塊（粉/薄荷/天藍，和圖示底色同一組）→ 視差最小
+   中：虛線圓環 + 小星星（logo 的奶油黃）
+   近：兩層紙張波浪，把畫面底部壓穩
+   ========================================================= */
+.bg { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.bg > * { position: absolute; translate: calc(var(--mx, 0) * var(--dp, 1) * 14px) calc(var(--my, 0) * var(--dp, 1) * 9px); }
+.bg-blob { border-radius: 50%; filter: blur(70px); opacity: .55; --dp: .4; }
+.b1 { width: 38vw; height: 38vw; left: -8vw; top: -12vw; background: #ffd9d4; }
+.b2 { width: 34vw; height: 34vw; left: 22vw; bottom: -14vw; background: #d4efdf; opacity: .6; }
+.b3 { width: 30vw; height: 30vw; right: -6vw; top: 8vh; background: #d3e6ff; opacity: .1; }
+.bg-rings { width: min(92vh, 62vw); aspect-ratio: 1; left: 3vw; top: 12vh; --dp: .7; animation: ring-spin 140s linear infinite; }
+.bg-star { background: #fdd070; clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%); --dp: 1.6; animation: twinkle 3.2s ease-in-out infinite; }
+.s1 { width: 26px; height: 26px; left: 46%; top: 16%; }
+.s2 { width: 16px; height: 16px; left: 9%; top: 58%; animation-delay: .9s; }
+.s3 { width: 20px; height: 20px; left: 60%; bottom: 18%; animation-delay: 1.7s; }
+.bg-wave { left: -2%; width: 104%; --dp: 1.2; }
+.w1 { bottom: 0; height: 22vh; fill: #f3d9a3; opacity: .9; }
+.w2 { bottom: -1px; height: 14vh; fill: #ecc98a; --dp: 1.8; }
+@keyframes ring-spin { to { rotate: 360deg; } }
+
+/* =========================================================
+   Loading 進場
+   ========================================================= */
+.loader {
+  position: fixed; inset: 0; z-index: 100;
+  display: grid; place-items: center;
+  background: #fdd070 radial-gradient(rgba(107, 58, 46, .09) 1.4px, transparent 1.7px) 0 0 / 22px 22px;
+  transition: transform 1s cubic-bezier(.76, 0, .24, 1) .1s;
+}
+.loader.done { transform: translateY(-112%); }
+.loader.done .loader-body { opacity: 0; scale: .9; transition: opacity .35s, scale .35s; }
+.loader-wave { position: absolute; left: 0; top: 100%; width: 100%; height: 90px; fill: #fdd070; margin-top: -1px; }
+.loader-body { display: grid; justify-items: center; gap: 28px; padding: 24px; }
+.loader-logo { width: min(520px, 78vw); height: auto; user-select: none; animation: logo-pop .9s var(--pop) .1s backwards, bob 3s ease-in-out 1s infinite; }
+.loader-tools { display: flex; gap: clamp(8px, 2vw, 18px); }
+.loader-tools img { width: clamp(38px, 7vw, 64px); height: clamp(38px, 7vw, 64px); object-fit: contain; animation: load-hop 1.2s ease-in-out calc(var(--i) * .14s) infinite; }
+.loader-text { font-size: 22px; letter-spacing: .18em; color: #6b3a2e; }
+.loader-text span { animation: dot-blink 1.2s infinite; }
+.loader-text span:nth-child(2) { animation-delay: .2s; }
+.loader-text span:nth-child(3) { animation-delay: .4s; }
+.homepage-intro {
+  position: fixed; inset: 0; z-index: 99; display: grid; place-items: center;
+  background: #2b2b2b;
+}
+.homepage-intro[hidden] { display: none; }
+.homepage-intro video { display: block; width: 100%; height: 100%; object-fit: contain; }
+@keyframes logo-pop { from { opacity: 0; scale: .5; rotate: -8deg; } }
+@keyframes load-hop { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-18px) rotate(-6deg); } }
+@keyframes dot-blink { 0%, 60%, 100% { opacity: .2; } 30% { opacity: 1; } }
+
+/* Loading 期間：主畫面的進場動畫先暫停，拉開時才一起跳出來 */
+body.loading { overflow: hidden; }
+body.loading .hero, body.loading .hero * { animation-play-state: paused !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  .bg-rings, .bg-star, .loader-logo, .loader-tools img, .loader-text span { animation: none !important; }
+  .loader { transition-duration: .01s; }
+}

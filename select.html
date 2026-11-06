@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PickMe｜選擇工具</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Huninn&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style2.css?v=login-icon">
+  <link rel="stylesheet" href="cursor.css">
+</head>
+<body class="tool-select-page">
+  <header class="auth-top">
+    <a class="logo" href="./index.html" aria-label="PickMe 首頁">
+      <img src="images/pickme-logo.png" alt="PickMe!" draggable="false">
+    </a>
+    <div class="tool-top-actions">
+      <a class="home-icon-button" href="./index.html" aria-label="回首頁" title="回首頁">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>
+        </svg>
+      </a>
+    </div>
+  </header>
+  <main class="tool-select-main">
+    <section class="tool-select-panel" aria-labelledby="selectionTitle">
+      <p class="s-tag">PICK YOUR CHOICE</p>
+      <h1 id="selectionTitle"></h1>
+      <p class="tool-select-copy">挑一種喜歡的方式，讓 PickMe 幫你決定！</p>
+      <nav class="tool-select-grid" id="toolChoices" aria-label="選擇工具"></nav>
+      <p class="tool-select-error" id="selectionError" role="alert" hidden>
+        找不到這個主題，請回首頁重新選擇。
+      </p>
+    </section>
+  </main>
+  <div class="loader tool-navigation-loader" id="toolNavigationLoader" role="status" aria-live="polite" hidden>
+    <div class="loader-body">
+      <img class="loader-logo" src="images/pickme-logo.png" alt="PickMe!" draggable="false">
+      <div class="loader-tools" aria-hidden="true">
+        <img src="images/tool-gacha.png" alt="" style="--i:0">
+        <img src="images/tool-slot.png"  alt="" style="--i:1">
+        <img src="images/tool-claw.png"  alt="" style="--i:2">
+        <img src="images/tool-wheel.png" alt="" style="--i:3">
+        <img src="images/tool-card.png"  alt="" style="--i:4">
+      </div>
+      <p class="loader-text"><span id="toolNavigationLabel">正在準備工具</span><span>.</span><span>.</span><span>.</span></p>
+    </div>
+    <svg class="loader-wave" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true"><path d="M0 0H1440V50C1360 100 1280 100 1200 60S1040 20 960 60 800 110 720 70 560 20 480 60 320 105 240 70 80 30 0 70Z"/></svg>
+  </div>
+  <script src="cursor.js"></script>
+  <script src="selection.js"></script>
+</body>
+</html>

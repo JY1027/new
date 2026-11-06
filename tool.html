@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PickMe｜工具體驗</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Huninn&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style2.css?v=login-icon">
+  <link rel="stylesheet" href="cursor.css">
+</head>
+<body class="tool-page">
+  <div class="bg" aria-hidden="true">
+    <i class="bg-blob b1"></i><i class="bg-blob b2"></i><i class="bg-blob b3"></i>
+    <i class="bg-star s1"></i><i class="bg-star s2"></i><i class="bg-star s3"></i>
+    <svg class="bg-wave w1" viewBox="0 0 1440 220" preserveAspectRatio="none"><path d="M0 90C180 30 330 30 520 80S900 150 1100 90 1360 30 1440 60V220H0Z"/></svg>
+    <svg class="bg-wave w2" viewBox="0 0 1440 220" preserveAspectRatio="none"><path d="M0 120C200 70 380 60 560 110S940 170 1140 120 1380 80 1440 100V220H0Z"/></svg>
+  </div>
+  <header class="auth-top">
+    <a class="logo" href="./index.html" aria-label="PickMe 首頁"><img src="images/pickme-logo.png" alt="PickMe!" draggable="false"></a>
+    <div class="tool-top-actions">
+      <a class="home-icon-button" href="./index.html" aria-label="回首頁" title="回首頁">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>
+        </svg>
+      </a>
+      <button class="fav tool-favorite" id="toolFavorite" type="button" aria-label="收藏此工具" aria-pressed="false">
+        <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="m24 5 5.8 12 13.2 1.9-9.5 9.2 2.2 13L24 35l-11.7 6.1 2.2-13L5 18.9 18.2 17 24 5Z"/>
+        </svg>
+        <span>Favorite</span>
+      </button>
+    </div>
+  </header>
+  <main class="tool-card" id="toolApp" aria-live="polite">
+    <p class="s-tag">PICK YOUR CHOICE</p>
+    <div class="tool-heading">
+      <img id="toolImage" alt="" draggable="false">
+      <div>
+        <p class="tool-kicker">今天的選擇，就交給它！</p>
+        <h1 id="toolName"></h1>
+      </div>
+    </div>
+    <label class="tool-label" for="options">輸入你的選項（一行一個，至少兩個）</label>
+    <textarea id="options" rows="5" maxlength="500">選項 A
+選項 B
+選項 C</textarea>
+    <p class="tool-error" id="toolError" role="alert"></p>
+    <button class="btn-kick tool-action" id="drawButton" type="button"></button>
+    <section class="tool-result" id="result" aria-live="polite" hidden>
+      <p>今天就選這個！</p>
+      <strong id="resultText"></strong>
+      <button class="tool-again" id="againButton" type="button">再玩一次</button>
+    </section>
+  </main>
+  <script src="auth.js"></script>
+  <script src="cursor.js"></script>
+  <script src="tool.js"></script>
+</body>
+</html>

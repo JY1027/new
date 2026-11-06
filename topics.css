@@ -1,0 +1,230 @@
+.topics-page {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 30% 5%, rgba(255, 255, 255, .75), transparent 34rem),
+    radial-gradient(rgba(107, 58, 46, .07) 1.4px, transparent 1.7px) 0 0 / 22px 22px,
+    linear-gradient(160deg, #f8e9c6, #efd8a9);
+}
+.topics-page main { padding: 116px clamp(18px, 5vw, 72px) 36px; }
+.topics-hero { max-width: 1040px; margin: 0 auto 72px; text-align: center; }
+.topics-hero .s-tag { margin: 0 auto 12px; }
+.topics-hero h1 { font-size: clamp(38px, 7vw, 72px); font-weight: 400; line-height: 1.18; }
+.topics-hero > p:not(.s-tag) { margin-top: 14px; color: #6b3a2e; font-size: clamp(16px, 2vw, 21px); }
+.topics-jump { display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; margin-top: 26px; }
+.topics-jump a {
+  padding: 9px 22px 11px; color: var(--ink); text-decoration: none; font-size: 18px;
+  border: 3px solid var(--ink); border-radius: 999px; background: var(--paper);
+  box-shadow: 0 4px 0 var(--ink); transition: transform .25s var(--pop), box-shadow .25s;
+}
+.topics-jump a:hover { transform: translateY(-3px); box-shadow: 0 7px 0 var(--ink); }
+.guide-section { max-width: 1260px; margin: 0 auto; padding: 54px clamp(18px, 4vw, 48px) 64px; }
+.food-section { border-radius: 44px; background: rgba(255, 253, 246, .78); }
+.attraction-section { margin-top: 80px; border-radius: 44px; background: rgba(255, 239, 218, .68); }
+.guide-heading { max-width: 740px; margin: 0 auto 38px; text-align: center; }
+.guide-eyebrow { color: #ce7242; font-family: var(--font-logo); font-size: 24px; letter-spacing: .12em; }
+.guide-heading h2 { margin-top: 4px; font-size: clamp(34px, 5vw, 54px); font-weight: 400; }
+.guide-heading > p:last-child { margin-top: 8px; color: #6b3a2e; font-size: 17px; line-height: 1.7; }
+.food-grid, .attraction-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 34px 24px; align-items: start; }
+.food-card { min-width: 0; }
+.food-flip {
+  display: block; width: 100%; height: 350px; padding: 0; cursor: pointer; color: var(--ink);
+  font: inherit; text-align: left; background: transparent; border: 0; perspective: 1100px;
+}
+.food-flip:focus-visible { outline: 4px dashed #ce7242; outline-offset: 7px; border-radius: 24px; }
+.food-flip-inner {
+  position: relative; display: block; width: 100%; height: 100%;
+  transform-style: preserve-3d; transition: transform .7s cubic-bezier(.2, .75, .25, 1);
+}
+.food-flip.is-flipped .food-flip-inner { transform: rotateY(180deg); }
+.food-face {
+  position: absolute; inset: 0; display: flex; flex-direction: column; overflow: hidden;
+  backface-visibility: hidden; border: 4px solid var(--ink); border-radius: 26px;
+  box-shadow: 0 8px 0 var(--ink);
+}
+.food-front { background: #fffdf6; }
+.food-front img { width: 100%; height: 250px; object-fit: cover; background: #f4dfbb; }
+.food-name {
+  display: flex; flex: 1; align-items: center; justify-content: center;
+  padding: 0 18px; font-size: 26px; font-weight: 400; text-align: center;
+}
+.food-hint { display: block; margin: 4px 18px 10px; color: #a6603c; font-size: 14px; text-align: center; }
+.food-back {
+  padding: 22px 22px 16px; color: var(--ink); background: #ffe8ad;
+  transform: rotateY(180deg);
+}
+.food-back .image-credit { margin: auto auto 0; }
+.food-back-number { color: #ce7242; font: 700 22px var(--font-logo); letter-spacing: .12em; }
+.food-back-title { margin: 8px 0 12px; font-size: 24px; }
+.food-shops { display: grid; gap: 10px; }
+.food-shop { padding-top: 10px; border-top: 1px dashed rgba(43, 43, 43, .48); font-size: 16px; line-height: 1.65; }
+.food-back .food-hint { margin: auto 0 0; text-align: right; }
+.image-credit {
+  display: block; width: fit-content; max-width: 100%; margin: 11px auto 0; overflow: hidden;
+  color: #76594d; font-size: 11px; line-height: 1.5; text-overflow: ellipsis; white-space: nowrap;
+}
+.image-credit:hover { color: #b95e36; }
+.attraction-card {
+  position: relative; z-index: 0; min-width: 0; display: flex; flex-direction: column;
+  transition: none;
+}
+.attraction-stamp {
+  position: relative; z-index: 1; display: block; width: 100%; aspect-ratio: 4 / 3; padding: 0;
+  cursor: pointer; color: #fffdf8; text-align: left; background: #eed9b7; border: 0;
+  filter: drop-shadow(0 5px 5px rgba(80, 57, 34, .16));
+  clip-path: polygon(
+    0% 0%, 1.25% 1.2%, 2.5% 2.4%, 3.75% 1.2%, 5% 0%, 6.25% 1.2%, 7.5% 2.4%, 8.75% 1.2%,
+    10% 0%, 11.25% 1.2%, 12.5% 2.4%, 13.75% 1.2%, 15% 0%, 16.25% 1.2%, 17.5% 2.4%, 18.75% 1.2%,
+    20% 0%, 21.25% 1.2%, 22.5% 2.4%, 23.75% 1.2%, 25% 0%, 26.25% 1.2%, 27.5% 2.4%, 28.75% 1.2%,
+    30% 0%, 31.25% 1.2%, 32.5% 2.4%, 33.75% 1.2%, 35% 0%, 36.25% 1.2%, 37.5% 2.4%, 38.75% 1.2%,
+    40% 0%, 41.25% 1.2%, 42.5% 2.4%, 43.75% 1.2%, 45% 0%, 46.25% 1.2%, 47.5% 2.4%, 48.75% 1.2%,
+    50% 0%, 51.25% 1.2%, 52.5% 2.4%, 53.75% 1.2%, 55% 0%, 56.25% 1.2%, 57.5% 2.4%, 58.75% 1.2%,
+    60% 0%, 61.25% 1.2%, 62.5% 2.4%, 63.75% 1.2%, 65% 0%, 66.25% 1.2%, 67.5% 2.4%, 68.75% 1.2%,
+    70% 0%, 71.25% 1.2%, 72.5% 2.4%, 73.75% 1.2%, 75% 0%, 76.25% 1.2%, 77.5% 2.4%, 78.75% 1.2%,
+    80% 0%, 81.25% 1.2%, 82.5% 2.4%, 83.75% 1.2%, 85% 0%, 86.25% 1.2%, 87.5% 2.4%, 88.75% 1.2%,
+    90% 0%, 91.25% 1.2%, 92.5% 2.4%, 93.75% 1.2%, 95% 0%, 96.25% 1.2%, 97.5% 2.4%, 98.75% 1.2%, 100% 0%,
+    98.8% 1.56%, 97.6% 3.12%, 98.8% 4.69%, 100% 6.25%, 98.8% 7.81%, 97.6% 9.38%, 98.8% 10.94%,
+    100% 12.5%, 98.8% 14.06%, 97.6% 15.62%, 98.8% 17.19%, 100% 18.75%, 98.8% 20.31%, 97.6% 21.88%, 98.8% 23.44%,
+    100% 25%, 98.8% 26.56%, 97.6% 28.12%, 98.8% 29.69%, 100% 31.25%, 98.8% 32.81%, 97.6% 34.38%, 98.8% 35.94%,
+    100% 37.5%, 98.8% 39.06%, 97.6% 40.62%, 98.8% 42.19%, 100% 43.75%, 98.8% 45.31%, 97.6% 46.88%, 98.8% 48.44%,
+    100% 50%, 98.8% 51.56%, 97.6% 53.12%, 98.8% 54.69%, 100% 56.25%, 98.8% 57.81%, 97.6% 59.38%, 98.8% 60.94%,
+    100% 62.5%, 98.8% 64.06%, 97.6% 65.62%, 98.8% 67.19%, 100% 68.75%, 98.8% 70.31%, 97.6% 71.88%, 98.8% 73.44%,
+    100% 75%, 98.8% 76.56%, 97.6% 78.12%, 98.8% 79.69%, 100% 81.25%, 98.8% 82.81%, 97.6% 84.38%, 98.8% 85.94%,
+    100% 87.5%, 98.8% 89.06%, 97.6% 90.62%, 98.8% 92.19%, 100% 93.75%, 98.8% 95.31%, 97.6% 96.88%, 98.8% 98.44%, 100% 100%,
+    98.75% 98.8%, 97.5% 97.6%, 96.25% 98.8%, 95% 100%, 93.75% 98.8%, 92.5% 97.6%, 91.25% 98.8%, 90% 100%,
+    88.75% 98.8%, 87.5% 97.6%, 86.25% 98.8%, 85% 100%, 83.75% 98.8%, 82.5% 97.6%, 81.25% 98.8%, 80% 100%,
+    78.75% 98.8%, 77.5% 97.6%, 76.25% 98.8%, 75% 100%, 73.75% 98.8%, 72.5% 97.6%, 71.25% 98.8%, 70% 100%,
+    68.75% 98.8%, 67.5% 97.6%, 66.25% 98.8%, 65% 100%, 63.75% 98.8%, 62.5% 97.6%, 61.25% 98.8%, 60% 100%,
+    58.75% 98.8%, 57.5% 97.6%, 56.25% 98.8%, 55% 100%, 53.75% 98.8%, 52.5% 97.6%, 51.25% 98.8%, 50% 100%,
+    48.75% 98.8%, 47.5% 97.6%, 46.25% 98.8%, 45% 100%, 43.75% 98.8%, 42.5% 97.6%, 41.25% 98.8%, 40% 100%,
+    38.75% 98.8%, 37.5% 97.6%, 36.25% 98.8%, 35% 100%, 33.75% 98.8%, 32.5% 97.6%, 31.25% 98.8%, 30% 100%,
+    28.75% 98.8%, 27.5% 97.6%, 26.25% 98.8%, 25% 100%, 23.75% 98.8%, 22.5% 97.6%, 21.25% 98.8%, 20% 100%,
+    18.75% 98.8%, 17.5% 97.6%, 16.25% 98.8%, 15% 100%, 13.75% 98.8%, 12.5% 97.6%, 11.25% 98.8%, 10% 100%,
+    8.75% 98.8%, 7.5% 97.6%, 6.25% 98.8%, 5% 100%, 3.75% 98.8%, 2.5% 97.6%, 1.25% 98.8%, 0% 100%,
+    1.2% 98.44%, 2.4% 96.88%, 1.2% 95.31%, 0% 93.75%, 1.2% 92.19%, 2.4% 90.62%, 1.2% 89.06%, 0% 87.5%,
+    1.2% 85.94%, 2.4% 84.38%, 1.2% 82.81%, 0% 81.25%, 1.2% 79.69%, 2.4% 78.12%, 1.2% 76.56%, 0% 75%,
+    1.2% 73.44%, 2.4% 71.88%, 1.2% 70.31%, 0% 68.75%, 1.2% 67.19%, 2.4% 65.62%, 1.2% 64.06%, 0% 62.5%,
+    1.2% 60.94%, 2.4% 59.38%, 1.2% 57.81%, 0% 56.25%, 1.2% 54.69%, 2.4% 53.12%, 1.2% 51.56%, 0% 50%,
+    1.2% 48.44%, 2.4% 46.88%, 1.2% 45.31%, 0% 43.75%, 1.2% 42.19%, 2.4% 40.62%, 1.2% 39.06%, 0% 37.5%,
+    1.2% 35.94%, 2.4% 34.38%, 1.2% 32.81%, 0% 31.25%, 1.2% 29.69%, 2.4% 28.12%, 1.2% 26.56%, 0% 25%,
+    1.2% 23.44%, 2.4% 21.88%, 1.2% 20.31%, 0% 18.75%, 1.2% 17.19%, 2.4% 15.62%, 1.2% 14.06%, 0% 12.5%,
+    1.2% 10.94%, 2.4% 9.38%, 1.2% 7.81%, 0% 6.25%, 1.2% 4.69%, 2.4% 3.12%, 1.2% 1.56%, 0% 0%
+  );
+  clip-path: polygon(
+    0% 0%, 1.25% 1.2%, 2.5% 2.4%, 3.75% 1.2%, 5% 0%, 6.25% 1.2%, 7.5% 2.4%, 8.75% 1.2%,
+    10% 0%, 11.25% 1.2%, 12.5% 2.4%, 13.75% 1.2%, 15% 0%, 16.25% 1.2%, 17.5% 2.4%, 18.75% 1.2%,
+    20% 0%, 21.25% 1.2%, 22.5% 2.4%, 23.75% 1.2%, 25% 0%, 26.25% 1.2%, 27.5% 2.4%, 28.75% 1.2%,
+    30% 0%, 31.25% 1.2%, 32.5% 2.4%, 33.75% 1.2%, 35% 0%, 36.25% 1.2%, 37.5% 2.4%, 38.75% 1.2%,
+    40% 0%, 41.25% 1.2%, 42.5% 2.4%, 43.75% 1.2%, 45% 0%, 46.25% 1.2%, 47.5% 2.4%, 48.75% 1.2%,
+    50% 0%, 51.25% 1.2%, 52.5% 2.4%, 53.75% 1.2%, 55% 0%, 56.25% 1.2%, 57.5% 2.4%, 58.75% 1.2%,
+    60% 0%, 61.25% 1.2%, 62.5% 2.4%, 63.75% 1.2%, 65% 0%, 66.25% 1.2%, 67.5% 2.4%, 68.75% 1.2%,
+    70% 0%, 71.25% 1.2%, 72.5% 2.4%, 73.75% 1.2%, 75% 0%, 76.25% 1.2%, 77.5% 2.4%, 78.75% 1.2%,
+    80% 0%, 81.25% 1.2%, 82.5% 2.4%, 83.75% 1.2%, 85% 0%, 86.25% 1.2%, 87.5% 2.4%, 88.75% 1.2%,
+    90% 0%, 91.25% 1.2%, 92.5% 2.4%, 93.75% 1.2%, 95% 0%, 96.25% 1.2%, 97.5% 2.4%, 98.75% 1.2%, 100% 0%,
+    98.8% 1.56%, 97.6% 3.12%, 98.8% 4.69%, 100% 6.25%, 98.8% 7.81%, 97.6% 9.38%, 98.8% 10.94%,
+    100% 12.5%, 98.8% 14.06%, 97.6% 15.62%, 98.8% 17.19%, 100% 18.75%, 98.8% 20.31%, 97.6% 21.88%, 98.8% 23.44%,
+    100% 25%, 98.8% 26.56%, 97.6% 28.12%, 98.8% 29.69%, 100% 31.25%, 98.8% 32.81%, 97.6% 34.38%, 98.8% 35.94%,
+    100% 37.5%, 98.8% 39.06%, 97.6% 40.62%, 98.8% 42.19%, 100% 43.75%, 98.8% 45.31%, 97.6% 46.88%, 98.8% 48.44%,
+    100% 50%, 98.8% 51.56%, 97.6% 53.12%, 98.8% 54.69%, 100% 56.25%, 98.8% 57.81%, 97.6% 59.38%, 98.8% 60.94%,
+    100% 62.5%, 98.8% 64.06%, 97.6% 65.62%, 98.8% 67.19%, 100% 68.75%, 98.8% 70.31%, 97.6% 71.88%, 98.8% 73.44%,
+    100% 75%, 98.8% 76.56%, 97.6% 78.12%, 98.8% 79.69%, 100% 81.25%, 98.8% 82.81%, 97.6% 84.38%, 98.8% 85.94%,
+    100% 87.5%, 98.8% 89.06%, 97.6% 90.62%, 98.8% 92.19%, 100% 93.75%, 98.8% 95.31%, 97.6% 96.88%, 98.8% 98.44%, 100% 100%,
+    98.75% 98.8%, 97.5% 97.6%, 96.25% 98.8%, 95% 100%, 93.75% 98.8%, 92.5% 97.6%, 91.25% 98.8%, 90% 100%,
+    88.75% 98.8%, 87.5% 97.6%, 86.25% 98.8%, 85% 100%, 83.75% 98.8%, 82.5% 97.6%, 81.25% 98.8%, 80% 100%,
+    78.75% 98.8%, 77.5% 97.6%, 76.25% 98.8%, 75% 100%, 73.75% 98.8%, 72.5% 97.6%, 71.25% 98.8%, 70% 100%,
+    68.75% 98.8%, 67.5% 97.6%, 66.25% 98.8%, 65% 100%, 63.75% 98.8%, 62.5% 97.6%, 61.25% 98.8%, 60% 100%,
+    58.75% 98.8%, 57.5% 97.6%, 56.25% 98.8%, 55% 100%, 53.75% 98.8%, 52.5% 97.6%, 51.25% 98.8%, 50% 100%,
+    48.75% 98.8%, 47.5% 97.6%, 46.25% 98.8%, 45% 100%, 43.75% 98.8%, 42.5% 97.6%, 41.25% 98.8%, 40% 100%,
+    38.75% 98.8%, 37.5% 97.6%, 36.25% 98.8%, 35% 100%, 33.75% 98.8%, 32.5% 97.6%, 31.25% 98.8%, 30% 100%,
+    28.75% 98.8%, 27.5% 97.6%, 26.25% 98.8%, 25% 100%, 23.75% 98.8%, 22.5% 97.6%, 21.25% 98.8%, 20% 100%,
+    18.75% 98.8%, 17.5% 97.6%, 16.25% 98.8%, 15% 100%, 13.75% 98.8%, 12.5% 97.6%, 11.25% 98.8%, 10% 100%,
+    8.75% 98.8%, 7.5% 97.6%, 6.25% 98.8%, 5% 100%, 3.75% 98.8%, 2.5% 97.6%, 1.25% 98.8%, 0% 100%,
+    1.2% 98.44%, 2.4% 96.88%, 1.2% 95.31%, 0% 93.75%, 1.2% 92.19%, 2.4% 90.62%, 1.2% 89.06%, 0% 87.5%,
+    1.2% 85.94%, 2.4% 84.38%, 1.2% 82.81%, 0% 81.25%, 1.2% 79.69%, 2.4% 78.12%, 1.2% 76.56%, 0% 75%,
+    1.2% 73.44%, 2.4% 71.88%, 1.2% 70.31%, 0% 68.75%, 1.2% 67.19%, 2.4% 65.62%, 1.2% 64.06%, 0% 62.5%,
+    1.2% 60.94%, 2.4% 59.38%, 1.2% 57.81%, 0% 56.25%, 1.2% 54.69%, 2.4% 53.12%, 1.2% 51.56%, 0% 50%,
+    1.2% 48.44%, 2.4% 46.88%, 1.2% 45.31%, 0% 43.75%, 1.2% 42.19%, 2.4% 40.62%, 1.2% 39.06%, 0% 37.5%,
+    1.2% 35.94%, 2.4% 34.38%, 1.2% 32.81%, 0% 31.25%, 1.2% 29.69%, 2.4% 28.12%, 1.2% 26.56%, 0% 25%,
+    1.2% 23.44%, 2.4% 21.88%, 1.2% 20.31%, 0% 18.75%, 1.2% 17.19%, 2.4% 15.62%, 1.2% 14.06%, 0% 12.5%,
+    1.2% 10.94%, 2.4% 9.38%, 1.2% 7.81%, 0% 6.25%, 1.2% 4.69%, 2.4% 3.12%, 1.2% 1.56%, 0% 0%
+  );
+}
+.attraction-stamp:focus-visible { outline: 4px dashed #ce7242; outline-offset: 4px; }
+.attraction-number {
+  position: absolute; top: 15px; left: 15px; z-index: 2;
+  display: flex; align-items: center; gap: 10px; min-width: 72px; padding: 8px 12px;
+  color: #fffdf8; font: 700 30px/.9 var(--font-logo);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, .45);
+  background: rgba(43, 43, 43, .32); backdrop-filter: blur(5px);
+}
+.attraction-number::after {
+  content: ''; width: 26px; height: 1px;
+  background: repeating-linear-gradient(90deg, currentColor 0 3px, transparent 3px 6px);
+}
+.attraction-photo { position: absolute; inset: 0; overflow: hidden; margin: 0; background: #eed9b7; }
+.attraction-photo img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform .7s var(--pop); }
+.attraction-pullout {
+  position: absolute; top: calc(100% - 12px); left: 0; right: 0; z-index: 0;
+  max-height: 0; overflow: hidden; opacity: 0; visibility: hidden; width: 95%; align-self: center; margin: 0 auto;
+  color: var(--ink); background: #fffdf8;
+  clip-path: polygon(0 0, 100% 0, 100% 96%, 96% 100%, 92% 96%, 88% 100%, 84% 96%, 80% 100%, 76% 96%, 72% 100%, 68% 96%, 64% 100%, 60% 96%, 56% 100%, 52% 96%, 48% 100%, 44% 96%, 40% 100%, 36% 96%, 32% 100%, 28% 96%, 24% 100%, 20% 96%, 16% 100%, 12% 96%, 8% 100%, 4% 96%, 0 100%);
+  transform: translateY(20px); transition: max-height .7s var(--pop), opacity .7s var(--pop), visibility .7s var(--pop), transform .7s var(--pop);
+}
+.attraction-card:focus-within:not(.is-collapsed) .attraction-pullout,
+.attraction-card.is-expanded .attraction-pullout { max-height: 360px; opacity: 1; visibility: visible; transform: translateY(0); transition-delay: 0s; }
+.attraction-details { padding: 18px 20px 24px; }
+.attraction-details h3 { font-size: 22px; font-weight: 400; line-height: 1.4; }
+.attraction-address { margin-top: 7px; color: #aa6848; font-size: 13px; line-height: 1.6; }
+.attraction-description { margin-top: 10px; font-size: 15px; line-height: 1.75; }
+.attraction-details .image-credit { margin: 12px 0 14px; }
+.attraction-card.is-expanded .attraction-photo img { transform: scale(1.04); }
+.attraction-card.is-expanded,
+.attraction-card:focus-within:not(.is-collapsed) { z-index: 5; }
+.topics-footer { padding: 26px 20px 46px; text-align: center; }
+.topics-footer .back { display: inline-block; }
+@media (max-width: 900px) {
+  .topics-page main { padding-right: 22px; padding-left: 22px; }
+  .guide-section { padding-right: 24px; padding-left: 24px; }
+  .food-grid, .attraction-grid { gap: 26px 18px; }
+  .food-flip { height: 320px; }
+  .food-front img { height: 220px; }
+  .attraction-details { padding-right: 16px; padding-left: 16px; }
+}
+@media (max-width: 620px) {
+  .topics-page main { padding: 100px 14px 24px; }
+  .topics-hero { margin-bottom: 42px; }
+  .guide-section { padding: 36px 16px 42px; border-radius: 30px; }
+  .attraction-section { margin-top: 48px; }
+  .guide-heading { margin-bottom: 27px; }
+  .food-grid, .attraction-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 12px; }
+  .food-flip { height: 280px; }
+  .food-front img { height: 180px; }
+  .food-name { padding: 0 12px; font-size: 21px; }
+  .food-hint { margin-right: 12px; margin-left: 12px; font-size: 12px; }
+  .food-back { padding: 16px 14px 12px; }
+  .food-back-number { font-size: 18px; }
+  .food-back-title { margin: 5px 0 8px; font-size: 19px; }
+  .food-shop { padding-top: 7px; font-size: 13px; line-height: 1.55; }
+  .food-back .food-hint { margin: auto 0 0; }
+  .attraction-number { top: 12px; left: 12px; min-width: 60px; padding: 7px 9px; font-size: 25px; }
+  .attraction-number::after { width: 20px; }
+  .attraction-details { padding: 14px 13px 20px; }
+  .attraction-details h3 { font-size: 17px; }
+  .attraction-address { margin-top: 5px; font-size: 11px; }
+  .attraction-description { margin-top: 7px; font-size: 12px; line-height: 1.6; }
+  .image-credit { font-size: 9px; }
+}
+@media (max-width: 380px) {
+  .food-grid, .attraction-grid { grid-template-columns: 1fr; }
+  .food-flip { height: 340px; }
+  .food-front img { height: 240px; }
+  .attraction-card { gap: 10px; }
+}
+@media (hover: hover) and (pointer: fine) {
+  .attraction-card:hover { z-index: 5; }
+  .attraction-card:hover .attraction-pullout { max-height: 360px; opacity: 1; visibility: visible; transform: translateY(0); transition-delay: 0s; }
+  .attraction-card:hover .attraction-photo img { transform: scale(1.04); }
+}
+.topics-page .top-ghost { position: fixed; }
+@media (prefers-reduced-motion: reduce) {
+  .food-flip-inner, .attraction-photo img { transition: none; }
+}
